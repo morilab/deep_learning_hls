@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="Matrix.h" path="D:\Projects\FPGA\deep_learning_hls\Matrix.h"/>
+    <originFiles name="deep_learning.cpp" path="D:\Projects\FPGA\deep_learning_hls\deep_learning.cpp"/>
+    <originFiles name="deep_learning.h" path="D:\Projects\FPGA\deep_learning_hls\deep_learning.h"/>
+  </source>
+  <testbench>
+    <originFiles name="test.cpp" path="D:\Projects\FPGA\deep_learning_hls\test.cpp"/>
+    <originFiles name="test.h" path="D:\Projects\FPGA\deep_learning_hls\test.h"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>
