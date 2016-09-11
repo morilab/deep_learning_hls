@@ -1,6 +1,22 @@
    Compiling ../../../test.cpp in debug mode
-In file included from ../../../test.h:5:0,
-                 from ../../../test.cpp:1:
-../../../deep_learning.h:22:86: error: default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x
-make: *** [obj/test.o] Error 1
-CRITICAL WARNING: [SIM 1] 'csim_design' failed: compilation error(s).
+   Generating csim.exe
+x0 = 1
+x1 = 3
+x2 = 5
+x3 = 7
+
+Weight = {
+  {   2   2   2 }
+  {   2   2  -1 }
+  {   2  -8  -2 }
+  {   2  -4   2 }
+};
+
+Bias = {
+  {  -1   0   1 }
+};
+
+u0 = 31
+u1 = 0
+u2 = 4
+INFO: [SIM 1] CSim done with 0 errors.

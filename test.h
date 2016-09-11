@@ -3,3 +3,6 @@
 
 #include <ap_int.h>
 #include "deep_learning.h"
+
+
+int main(void);

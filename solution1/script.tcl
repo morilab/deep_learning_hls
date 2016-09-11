@@ -6,7 +6,6 @@
 open_project deep_learning_hls
 set_top deep_learning
 add_files deep_learning_hls/Matrix.h
-add_files deep_learning_hls/deep_learning.cpp
 add_files deep_learning_hls/deep_learning.h
 add_files -tb deep_learning_hls/test.cpp
 add_files -tb deep_learning_hls/test.h
@@ -14,7 +13,7 @@ open_solution "solution1"
 set_part {xc7z020clg484-1} -tool vivado
 create_clock -period 10ns -name default
 #source "./deep_learning_hls/solution1/directives.tcl"
-csim_design
+csim_design -clean
 csynth_design
 cosim_design
 export_design -format ip_catalog

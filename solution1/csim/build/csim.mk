@@ -19,7 +19,7 @@ __SIM_DDS__ = 1
 
 ObjDir = obj
 
-HLS_SOURCES = ../../../test.cpp ../../../deep_learning.cpp
+HLS_SOURCES = ../../../test.cpp
 
 TARGET := csim.exe
 
@@ -75,9 +75,3 @@ $(ObjDir)/test.o: ../../../test.cpp $(ObjDir)/.dir
 	$(Verb)  $(CC) -c -MMD  $(IFLAG) $(DFLAG)  $< -o $@ ; \
 
 -include $(ObjDir)/test.d
-
-$(ObjDir)/deep_learning.o: ../../../deep_learning.cpp $(ObjDir)/.dir
-	$(Echo) "   Compiling ../../../deep_learning.cpp in $(BuildMode) mode" $(AVE_DIR_DLOG)
-	$(Verb)  $(CC) -c -MMD  $(IFLAG) $(DFLAG)  $< -o $@ ; \
-
--include $(ObjDir)/deep_learning.d

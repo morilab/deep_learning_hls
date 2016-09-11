@@ -1,51 +1,64 @@
 #include "test.h"
 
+
 int main(void) {
-	Matrix<1,4,int> x;
 	Matrix<1,3,int> z;
-	Matrix<4,3,int> weight;
-	Matrix<1,3,int> bias;
 
-	x(0,0) = 1;
-	x(0,1) = 2;
-	x(0,2) = 3;
-	x(0,3) = 4;
+	//------------------------------------
+	// setting input data (x)
+	//------------------------------------
+	int x[4] =
+	{1,3,5,7};
 
-	for(int j=0;j<3;j++){
-		bias(0,j)=j-1;
-		for(int i=0;i<4;i++){
-			weight(i,j)=2;
-		}
-	}
+	//------------------------------------
+	// setting Parameter (bias,weight)
+	//------------------------------------
+	int bias[3] =
+	{-1,0,1};
 
+	int weight[3][4] =
+	{
+		{ 2, 2, 2, 2},
+		{ 2, 2,-8,-4},
+		{ 2,-1,-2, 2},
+	};
+
+	//------------------------------------
+	// View Input data & Parameter
+	//------------------------------------
 	for(int i=0;i<4;i++){
-		printf("x%d = %d\n",i,x(0,i));
+		printf("x%d = %d\n",i,x[i]);
 	}
 	printf("\n");
 
 	printf("Weight = {\n");
-	for(int j=0;j<3;j++){
+	for(int i=0;i<4;i++){
 		printf("  {");
-		for(int i=0;i<4;i++){
-			printf(" %3d",weight(i,j));
+		for(int j=0;j<3;j++){
+			printf(" %3d",weight[j][i]);
 		}
 		printf(" }\n");
 	}
-	printf("};\n");
+	printf("};\n\n");
 
-	printf("Bias = {\n");
-	printf("  {");
+	printf("Bias = {\n  {");
 	for(int i=0;i<3;i++){
-		printf(" %3d",bias(0,i));
+		printf(" %3d",bias[i]);
 	}
-	printf(" }\n");
-	printf("};\n");
+	printf(" }\n};\n\n");
 
+	//------------------------------------
+	// run DeepLearning
+	//------------------------------------
 	z = deep_learning<4,3,int>(x, weight, bias);
 
 	for(int i=0;i<3;i++){
 		printf("u%d = %d\n",i,z(0,i));
 	}
 
+	delete [] x;
+	delete [] bias;
+	delete [] weight;
 	return 0;
 }
+
