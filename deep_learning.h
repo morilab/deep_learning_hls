@@ -50,6 +50,143 @@ private:
 };
 
 //-------------------------------------------------------------------
+// convolution perceptron class
+//-------------------------------------------------------------------
+template <const int IN_X, const int IN_Y, const int CNV_X, const int CNV_Y, typename T>
+class convolution_perceptron {
+public:
+	Matrix<IN_X  ,IN_Y  ,T> in;
+	Matrix<IN_X/2,IN_Y/2,T> out;
+
+	convolution_perceptron(){
+		for(int y=0;y<CNV_Y;y++){
+			for(int x=0;x<CNV_X;x++){
+				filter(x,y)=(T)1;
+		    }
+		}
+		for(int y=0;y<IN_Y;y++){
+			for(int x=0;x<IN_X;x++){
+				conv(x,y)=(T)0;
+			}
+		}
+		bias = (T)0;
+	}
+
+	virtual ~convolution_perceptron(){
+	}
+
+	void Convolution(){
+		// 畳み込み処理
+		for(int y=0;y<IN_Y;y++){
+			for(int x=0;x<IN_X;x++){
+				// 畳み込み演算
+				T pix = 0;
+				for(int dy=-(CNV_Y-1)/2;dy<(CNV_Y+1)/2;dy++){
+					for(int dx=-(CNV_X-1)/2;dx<(CNV_X+1)/2;dx++){
+						if(x+dx>=0 && y+dy>=0 && x+dx<IN_X && y+dy<IN_Y){
+							pix += in(x+dx,y+dy) * filter(dx+(CNV_X-1)/2,dy+(CNV_Y-1)/2);
+						}
+					}
+				}
+				conv(x,y) += pix;
+			}
+		}
+	}
+
+	void Activation(){
+		for(int y=0;y<IN_Y;y++){
+			for(int x=0;x<IN_X;x++){
+				conv(x,y) += bias; // バイアス処理
+				conv(x,y) = actfunc(conv(x,y)); // 活性化関数
+			}
+		}
+	}
+
+	void MaxPooling(){
+		// 2x2 MAXプーリング
+		for(int y=0;y<IN_Y/2;y++){
+			for(int x=0;x<IN_X/2;x++){
+				T max_x0 = (conv(x*2+0,y*2)>conv(x*2+0,y*2+1)) ? conv(x*2+0,y*2) : conv(x*2+0,y*2+1);
+				T max_x1 = (conv(x*2+1,y*2)>conv(x*2+1,y*2+1)) ? conv(x*2+1,y*2) : conv(x*2+1,y*2+1);
+				out(x,y) = (max_x0>max_x1) ? max_x0 : max_x1;
+				conv(x*2+0,y*2+0) = 0;
+				conv(x*2+1,y*2+0) = 0;
+				conv(x*2+0,y*2+1) = 0;
+				conv(x*2+1,y*2+1) = 0;
+			}
+		}
+	}
+
+	void Proc(){
+		Convolution();	// 畳み込み処理
+		Activation();   // バイアス＋活性化処理
+		MaxPooling();	// MAXプーリング
+	}
+
+	void set_filter(const T val[CNV_X*CNV_Y]){
+		for(int y=0;y<CNV_Y;y++){
+			for(int x=0;x<CNV_X;x++){
+				filter(x,y)=val[y*CNV_X+x];
+			}
+		}
+	}
+
+	void set_bias(T val){
+		bias = val;
+	}
+
+	void view_filter(){
+		printf("filter = {\n");
+		for(int y=0;y<CNV_Y;y++){
+			printf("  {");
+			for(int x=0;x<CNV_X;x++){
+				printf(" %3d",filter(x,y));
+			}
+			printf(" }\n");
+		}
+		printf("};\n\n");
+	}
+
+	void view_conv(){
+		printf("conv = {\n");
+		for(int y=0;y<IN_Y;y++){
+			printf("  {");
+			for(int x=0;x<IN_X;x++){
+				printf(" %3d",conv(x,y));
+			}
+			printf(" }\n");
+		}
+		printf("};\n\n");
+	}
+
+	void view_out(){
+		printf("out = {\n");
+		for(int y=0;y<IN_Y/2;y++){
+			printf("  {");
+			for(int x=0;x<IN_X/2;x++){
+				printf(" %3d",out(x,y));
+			}
+			printf(" }\n");
+		}
+		printf("};\n\n");
+	}
+
+private:
+	Matrix<CNV_X ,CNV_Y ,T> filter;
+	Matrix<IN_X  ,IN_Y  ,T> conv;
+	T bias;
+	virtual T actfunc(const T& in){ // Activation function(活性化関数)
+		// rectifier(正規化線形関数)
+		if(in<0){
+			return (T)0;
+		} else {
+			return in;
+		}
+	}
+
+};
+
+//-------------------------------------------------------------------
 // wrapper for VivadoHLS
 //-------------------------------------------------------------------
 template <const int X, const int Y, typename T>
@@ -66,4 +203,22 @@ Matrix<1,Y,T> deep_learning(T x[X], T weight[Y][X], T bias[Y]) {
 		}
 	}
 	return fnn.run(mat_x);
+}
+
+template <const int IN_X, const int IN_Y, const int CNV_X, const int CNV_Y, const int SIZE1, const int SIZE2, typename T>
+Matrix<IN_X/2,IN_Y/2,T> convolution_nn(Matrix<IN_X,IN_Y,T> inframe, T filter_L1[SIZE1][CNV_X*CNV_Y], T bias_L1[SIZE1], T filter_L2[SIZE2][SIZE1][CNV_X*CNV_Y], T bias_L2[SIZE2][SIZE1]) {
+	convolution_perceptron<IN_X  ,IN_Y  ,CNV_X,CNV_Y,T> perceptron_L1[SIZE1];
+	convolution_perceptron<IN_X/2,IN_Y/2,CNV_X,CNV_Y,T> perceptron_L2[SIZE2];
+	for(int j=0;j<SIZE2;j++){
+		for(int i=0;i<SIZE1;i++){
+			perceptron_L1[i].in = inframe;
+			perceptron_L1[i].set_bias(bias_L1[i]);
+			perceptron_L1[i].set_filter(filter_L1[i]);
+			perceptron_L1[i].Proc();
+			perceptron_L2[j].in = perceptron_L1[i].out;
+			perceptron_L2[j].set_bias(bias_L2[j][i]);
+			perceptron_L2[j].set_filter(filter_L2[j][i]);
+			perceptron_L2[j].Conversion();
+		}
+	}
 }
