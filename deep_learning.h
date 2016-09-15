@@ -109,15 +109,20 @@ public:
 				T max_x0 = (conv(x*2+0,y*2)>conv(x*2+0,y*2+1)) ? conv(x*2+0,y*2) : conv(x*2+0,y*2+1);
 				T max_x1 = (conv(x*2+1,y*2)>conv(x*2+1,y*2+1)) ? conv(x*2+1,y*2) : conv(x*2+1,y*2+1);
 				out(x,y) = (max_x0>max_x1) ? max_x0 : max_x1;
-				conv(x*2+0,y*2+0) = 0;
-				conv(x*2+1,y*2+0) = 0;
-				conv(x*2+0,y*2+1) = 0;
-				conv(x*2+1,y*2+1) = 0;
+			}
+		}
+	}
+
+	void clear_conv(){
+		for(int y=0;y<IN_Y;y++){
+			for(int x=0;x<IN_X;x++){
+				conv(x,y) = 0;
 			}
 		}
 	}
 
 	void Proc(){
+		clear_conv();
 		Convolution();	// 畳み込み処理
 		Activation();   // バイアス＋活性化処理
 		MaxPooling();	// MAXプーリング
@@ -206,19 +211,32 @@ Matrix<1,Y,T> deep_learning(T x[X], T weight[Y][X], T bias[Y]) {
 }
 
 template <const int IN_X, const int IN_Y, const int CNV_X, const int CNV_Y, const int SIZE1, const int SIZE2, typename T>
-Matrix<IN_X/2,IN_Y/2,T> convolution_nn(Matrix<IN_X,IN_Y,T> inframe, T filter_L1[SIZE1][CNV_X*CNV_Y], T bias_L1[SIZE1], T filter_L2[SIZE2][SIZE1][CNV_X*CNV_Y], T bias_L2[SIZE2][SIZE1]) {
+Matrix<1,IN_X*IN_Y*SIZE2/16,T> convolution_nn(Matrix<IN_X,IN_Y,T> inframe, T filter_L1[SIZE1][CNV_X*CNV_Y], T bias_L1[SIZE1], T filter_L2[SIZE2][SIZE1][CNV_X*CNV_Y], T bias_L2[SIZE2][SIZE1]) {
 	convolution_perceptron<IN_X  ,IN_Y  ,CNV_X,CNV_Y,T> perceptron_L1[SIZE1];
 	convolution_perceptron<IN_X/2,IN_Y/2,CNV_X,CNV_Y,T> perceptron_L2[SIZE2];
+	Matrix<1,IN_X*IN_Y*SIZE2/16,T> connect;
+
+	for(int i=0;i<SIZE1;i++){
+		perceptron_L1[i].in = inframe;
+		perceptron_L1[i].set_bias(bias_L1[i]);
+		perceptron_L1[i].set_filter(filter_L1[i]);
+		perceptron_L1[i].Proc();
+	}
 	for(int j=0;j<SIZE2;j++){
+		perceptron_L2[j].clear_conv();
 		for(int i=0;i<SIZE1;i++){
-			perceptron_L1[i].in = inframe;
-			perceptron_L1[i].set_bias(bias_L1[i]);
-			perceptron_L1[i].set_filter(filter_L1[i]);
-			perceptron_L1[i].Proc();
 			perceptron_L2[j].in = perceptron_L1[i].out;
 			perceptron_L2[j].set_bias(bias_L2[j][i]);
 			perceptron_L2[j].set_filter(filter_L2[j][i]);
 			perceptron_L2[j].Conversion();
 		}
+		perceptron_L2[j].Activation();
+		perceptron_L2[j].MaxPooling();
+		for(int y=0;y<IN_Y/4;y++){
+			for(int x=0;x<IN_X/4;x++){
+				connect(1,(IN_X*IN_Y/16)*j+y*(IN_X/4)+x) = perceptron_L2[j].out(x,y);
+			}
+		}
 	}
+	return connect;
 }
