@@ -7,18 +7,26 @@
 template <const int X, const int Y, typename T>
 class c_fnn {
 public:
+	// inout
+	Matrix<1,X,T> in;
+	Matrix<1,Y,T> out;
+
 	// Parameter
 	Matrix<X,Y,T> weight;
 	Matrix<1,Y,T> bias;
 
 	// Calculate
-	Matrix<1,Y,T> run(Matrix<1,X,T> x){
+	virtual Matrix<1,Y,T> run(Matrix<1,X,T> x){
 		u = weight*x+bias;
 		for(int y=0;y<Y;y++){
 			z.v[0][y] = actfunc(u(0,y));
 		}
 		return z;
 	}
+	void run(){
+		out = run(in);
+	}
+
 	virtual int errfunc(Matrix<1,Y,T> d){ // error function(誤差関数)
 		T err;
 		err = (T)0;
@@ -36,7 +44,7 @@ public:
 		// destructor
 	}
 
-private:
+protected:
 	Matrix<1,Y,T> u; //
 	Matrix<1,Y,T> z; // Output
 	virtual T actfunc(const T& in){ // Activation function(活性化関数)
@@ -46,6 +54,43 @@ private:
 		} else {
 			return in;
 		}
+	}
+};
+
+template <const int X, const int Y, typename T>
+class softmax_perceptron_fnn : public c_fnn<X,Y,T> {
+public:
+	softmax_perceptron_fnn(){
+		// constructor
+		sum_exp_u = 1.0;
+	}
+	virtual ~softmax_perceptron_fnn(){
+		// destructor
+	}
+
+	Matrix<1,Y,T> run(Matrix<1,X,T> x){
+		//u = weight*x+bias;
+		sum_exp_u = 0;
+		/*
+		for(int y=0;y<Y;y++){
+			sum_exp_u += exp((float)(u(0,y)));
+		}
+		for(int y=0;y<Y;y++){
+			z.v[0][y] = actfunc(u(0,y));
+		}
+		*/
+		Matrix<1,Y,T> a;
+		return a; // z;
+	}
+
+private:
+	float sum_exp_u;
+
+protected:
+	virtual T actfunc(const T& in){ // Activation function(活性化関数)
+		// SoftMax(ソフトマックス)
+		printf("in=%f; exp(in)=%f;\n",(float)in,exp((float)in));
+		return (T)(exp((float)in)/sum_exp_u);
 	}
 };
 
@@ -116,7 +161,7 @@ public:
 	void clear_conv(){
 		for(int y=0;y<IN_Y;y++){
 			for(int x=0;x<IN_X;x++){
-				conv(x,y) = 0;
+				conv(x,y) = (T)0;
 			}
 		}
 	}
@@ -176,7 +221,7 @@ public:
 		printf("};\n\n");
 	}
 
-private:
+protected:
 	Matrix<CNV_X ,CNV_Y ,T> filter;
 	Matrix<IN_X  ,IN_Y  ,T> conv;
 	T bias;
@@ -198,45 +243,89 @@ template <const int X, const int Y, typename T>
 Matrix<1,Y,T> deep_learning(T x[X], T weight[Y][X], T bias[Y]) {
 	c_fnn<X,Y,T> fnn;
 	Matrix<1,X,T> mat_x;
-	Matrix<X,Y,T> mat_weight;
 
 	for(int i=0;i<Y;i++){
-		fnn.bias.v[0][i]=bias[i];
+		fnn.bias(0,i)=bias[i];
 		for(int j=0;j<X;j++){
-			mat_x.v[0][j]=x[j];
-			fnn.weight.v[j][i]=weight[i][j];
+			mat_x(0,j)=x[j];
+			fnn.weight(j,i)=weight[i][j];
 		}
 	}
 	return fnn.run(mat_x);
 }
 
-template <const int IN_X, const int IN_Y, const int CNV_X, const int CNV_Y, const int SIZE1, const int SIZE2, typename T>
-Matrix<1,IN_X*IN_Y*SIZE2/16,T> convolution_nn(Matrix<IN_X,IN_Y,T> inframe, T filter_L1[SIZE1][CNV_X*CNV_Y], T bias_L1[SIZE1], T filter_L2[SIZE2][SIZE1][CNV_X*CNV_Y], T bias_L2[SIZE2][SIZE1]) {
-	convolution_perceptron<IN_X  ,IN_Y  ,CNV_X,CNV_Y,T> perceptron_L1[SIZE1];
-	convolution_perceptron<IN_X/2,IN_Y/2,CNV_X,CNV_Y,T> perceptron_L2[SIZE2];
-	Matrix<1,IN_X*IN_Y*SIZE2/16,T> connect;
+//-------------------------------------------------------------------
+template <const int IN_X, const int IN_Y, const int CNV_X, const int CNV_Y, const int SIZE1, const int SIZE2, const int SIZE3, const int SIZE4, typename T>
+Matrix<1,SIZE4,T> convolution_nn(
+		Matrix<IN_X,IN_Y,T> inframe,
+		T L1_filter[SIZE1][CNV_X*CNV_Y],
+		T L1_bias  [SIZE1],
+		T L2_filter[SIZE2][SIZE1][CNV_X*CNV_Y],
+		T L2_bias  [SIZE2][SIZE1],
+		T L3_weight[SIZE3][SIZE2][IN_X/4*IN_Y/4],
+		T L3_bias  [SIZE3],
+		T L4_weight[SIZE4][SIZE3],
+		T L4_bias  [SIZE4]
+) {
+	convolution_perceptron<IN_X  ,IN_Y  ,CNV_X,CNV_Y,T> L1_perceptron[SIZE1];
+	convolution_perceptron<IN_X/2,IN_Y/2,CNV_X,CNV_Y,T> L2_perceptron[SIZE2];
+	c_fnn<(IN_X/4*IN_Y/4)*SIZE2,SIZE3,T> L3_connect;
+	softmax_perceptron_fnn<SIZE3,SIZE4,T> L4_out;
 
+
+	// Layer 1 (Input Layer)
 	for(int i=0;i<SIZE1;i++){
-		perceptron_L1[i].in = inframe;
-		perceptron_L1[i].set_bias(bias_L1[i]);
-		perceptron_L1[i].set_filter(filter_L1[i]);
-		perceptron_L1[i].Proc();
+		L1_perceptron[i].in = inframe;
+		L1_perceptron[i].set_bias(L1_bias[i]);
+		L1_perceptron[i].set_filter(L1_filter[i]);
+		L1_perceptron[i].Proc();
 	}
+
+	// Layer 2
 	for(int j=0;j<SIZE2;j++){
-		perceptron_L2[j].clear_conv();
+		L2_perceptron[j].clear_conv();
 		for(int i=0;i<SIZE1;i++){
-			perceptron_L2[j].in = perceptron_L1[i].out;
-			perceptron_L2[j].set_bias(bias_L2[j][i]);
-			perceptron_L2[j].set_filter(filter_L2[j][i]);
-			perceptron_L2[j].Conversion();
+			L2_perceptron[j].in = L1_perceptron[i].out;
+			L2_perceptron[j].set_bias(L2_bias[j][i]);
+			L2_perceptron[j].set_filter(L2_filter[j][i]);
+			L2_perceptron[j].Convolution();
 		}
-		perceptron_L2[j].Activation();
-		perceptron_L2[j].MaxPooling();
+		L2_perceptron[j].Activation();
+		L2_perceptron[j].MaxPooling();
+
 		for(int y=0;y<IN_Y/4;y++){
 			for(int x=0;x<IN_X/4;x++){
-				connect(1,(IN_X*IN_Y/16)*j+y*(IN_X/4)+x) = perceptron_L2[j].out(x,y);
+				const int index  = (IN_X/4)*y+x;
+				const int offset = (IN_X/4*IN_Y/4)*j;
+				L3_connect.in(0,offset+index) = L2_perceptron[j].out(x,y);
 			}
 		}
 	}
-	return connect;
+
+	// Layer 3
+	for(int k=0;k<SIZE3;k++){
+		L3_connect.bias(0,k)=L3_bias[k];
+		for(int j=0;j<SIZE2;j++){
+			for(int i=0;i<IN_X/4*IN_Y/4;i++){
+				L3_connect.weight(j*(IN_X/4*IN_Y/4)+i,k) = L3_weight[k][j][i];
+			}
+		}
+	}
+	L3_connect.run();
+	//L3_connect.out.view_float("L3.out");
+	for(int i=0;i<SIZE3;i++){
+		L4_out.in(0,i) = L3_connect.out(0,i);
+	}
+
+	// Layer 4 (Output Layer)
+	for(int j=0;j<SIZE4;j++){
+		L4_out.bias(0,j)=L4_bias[j];
+		for(int i=0;i<SIZE3;i++){
+			L4_out.weight(i,j) = L4_weight[j][i];
+		}
+	}
+	L4_out.run();
+	L4_out.out.view_float("L4.out");
+
+	return L4_out.out;
 }

@@ -79,6 +79,30 @@ public:
 		return v[i][j];
 	}
 
+	void view_float(char *name){
+		printf("%s = {\n",name);
+		for(int y=0;y<Y;y++){
+			printf("  {");
+			for(int x=0;x<X;x++){
+				printf(" %8.4f",(float)v[x][y]);
+			}
+			printf(" }\n");
+		}
+		printf("};\n\n");
+	}
+
+	void view_int(char *name){
+		printf("%s = {\n",name);
+		for(int y=0;y<Y;y++){
+			printf("  {");
+			for(int x=0;x<X;x++){
+				printf(" %4d",(int)v[x][y]);
+			}
+			printf(" }\n");
+		}
+		printf("};\n\n");
+	}
+
 private:
 
 };
