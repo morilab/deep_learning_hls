@@ -5,9 +5,9 @@
 
 // Feed-forward Neural Network
 template <const int X, const int Y, typename T>
-class c_fnn {
+class relu_perceptron_fnn {
 public:
-	// inout
+	// In/Out Data
 	Matrix<1,X,T> in;
 	Matrix<1,Y,T> out;
 
@@ -37,10 +37,10 @@ public:
 		return err/2;
 	}
 
-	c_fnn(){
+	relu_perceptron_fnn(){
 		// constructor
 	}
-	virtual ~c_fnn(){
+	virtual ~relu_perceptron_fnn(){
 		// destructor
 	}
 
@@ -58,7 +58,7 @@ protected:
 };
 
 template <const int X, const int Y, typename T>
-class softmax_perceptron_fnn : public c_fnn<X,Y,T> {
+class softmax_perceptron_fnn : public relu_perceptron_fnn<X,Y,T> {
 public:
 	softmax_perceptron_fnn(){
 		// constructor
@@ -68,29 +68,28 @@ public:
 		// destructor
 	}
 
-	Matrix<1,Y,T> run(Matrix<1,X,T> x){
-		//u = weight*x+bias;
-		sum_exp_u = 0;
-		/*
+	virtual Matrix<1,Y,T> run(Matrix<1,X,T> x){
+		this->u = this->weight*x+this->bias;
+		sum_exp_u = 0.0;
 		for(int y=0;y<Y;y++){
-			sum_exp_u += exp((float)(u(0,y)));
+			sum_exp_u += exp((float)(this->u(0,y)));
 		}
 		for(int y=0;y<Y;y++){
-			z.v[0][y] = actfunc(u(0,y));
+			this->z(0,y) = actfunc(this->u(0,y));
 		}
-		*/
-		Matrix<1,Y,T> a;
-		return a; // z;
+		return this->z;
 	}
 
+	void run(){
+		this->out = run(this->in);
+	}
 private:
 	float sum_exp_u;
 
 protected:
 	virtual T actfunc(const T& in){ // Activation function(活性化関数)
 		// SoftMax(ソフトマックス)
-		printf("in=%f; exp(in)=%f;\n",(float)in,exp((float)in));
-		return (T)(exp((float)in)/sum_exp_u);
+		return exp((float)in)/sum_exp_u;
 	}
 };
 
@@ -241,7 +240,7 @@ protected:
 //-------------------------------------------------------------------
 template <const int X, const int Y, typename T>
 Matrix<1,Y,T> deep_learning(T x[X], T weight[Y][X], T bias[Y]) {
-	c_fnn<X,Y,T> fnn;
+	relu_perceptron_fnn<X,Y,T> fnn;
 	Matrix<1,X,T> mat_x;
 
 	for(int i=0;i<Y;i++){
@@ -269,7 +268,7 @@ Matrix<1,SIZE4,T> convolution_nn(
 ) {
 	convolution_perceptron<IN_X  ,IN_Y  ,CNV_X,CNV_Y,T> L1_perceptron[SIZE1];
 	convolution_perceptron<IN_X/2,IN_Y/2,CNV_X,CNV_Y,T> L2_perceptron[SIZE2];
-	c_fnn<(IN_X/4*IN_Y/4)*SIZE2,SIZE3,T> L3_connect;
+	relu_perceptron_fnn<(IN_X/4*IN_Y/4)*SIZE2,SIZE3,T> L3_connect;
 	softmax_perceptron_fnn<SIZE3,SIZE4,T> L4_out;
 
 

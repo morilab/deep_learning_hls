@@ -79,7 +79,7 @@ public:
 		return v[i][j];
 	}
 
-	void view_float(char *name){
+	void view_float(const char *name){
 		printf("%s = {\n",name);
 		for(int y=0;y<Y;y++){
 			printf("  {");
@@ -91,7 +91,7 @@ public:
 		printf("};\n\n");
 	}
 
-	void view_int(char *name){
+	void view_int(const char *name){
 		printf("%s = {\n",name);
 		for(int y=0;y<Y;y++){
 			printf("  {");

@@ -19,7 +19,7 @@ __SIM_DDS__ = 1
 
 ObjDir = obj
 
-HLS_SOURCES = ../../../test.cpp
+HLS_SOURCES = ../../../MNIST.cpp ../../../test.cpp
 
 TARGET := csim.exe
 
@@ -69,6 +69,12 @@ include ./Makefile.rules
 all: $(TARGET)
 
 
+
+$(ObjDir)/MNIST.o: ../../../MNIST.cpp $(ObjDir)/.dir
+	$(Echo) "   Compiling ../../../MNIST.cpp in $(BuildMode) mode" $(AVE_DIR_DLOG)
+	$(Verb)  $(CC) -c -MMD  $(IFLAG) $(DFLAG)  $< -o $@ ; \
+
+-include $(ObjDir)/MNIST.d
 
 $(ObjDir)/test.o: ../../../test.cpp $(ObjDir)/.dir
 	$(Echo) "   Compiling ../../../test.cpp in $(BuildMode) mode" $(AVE_DIR_DLOG)

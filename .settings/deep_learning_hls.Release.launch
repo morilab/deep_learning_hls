@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.cdt.launch.applicationLaunchType">
 <stringAttribute key="org.eclipse.cdt.launch.COREFILE_PATH" value=""/>
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_ARGUMENTS" value="D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Release/a.exe"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="deep_learning_hls"/>
 <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="false"/>
