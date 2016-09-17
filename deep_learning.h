@@ -50,7 +50,7 @@ protected:
 	virtual T actfunc(const T& in){ // Activation function(Šˆ«‰»ŠÖ”)
 		// rectifier(³‹K‰»üŒ`ŠÖ”)
 		if(in<0){
-			return (T)0;
+			return 0;
 		} else {
 			return in;
 		}
@@ -105,12 +105,12 @@ public:
 	convolution_perceptron(){
 		for(int y=0;y<CNV_Y;y++){
 			for(int x=0;x<CNV_X;x++){
-				filter(x,y)=(T)1;
+				filter(x,y)=1;
 		    }
 		}
 		for(int y=0;y<IN_Y;y++){
 			for(int x=0;x<IN_X;x++){
-				conv(x,y)=(T)0;
+				conv(x,y)=0;
 			}
 		}
 		bias = (T)0;
@@ -160,7 +160,7 @@ public:
 	void clear_conv(){
 		for(int y=0;y<IN_Y;y++){
 			for(int x=0;x<IN_X;x++){
-				conv(x,y) = (T)0;
+				conv(x,y) = 0;
 			}
 		}
 	}
@@ -185,39 +185,15 @@ public:
 	}
 
 	void view_filter(){
-		printf("filter = {\n");
-		for(int y=0;y<CNV_Y;y++){
-			printf("  {");
-			for(int x=0;x<CNV_X;x++){
-				printf(" %3d",filter(x,y));
-			}
-			printf(" }\n");
-		}
-		printf("};\n\n");
+		filter.view_float("Filter");
 	}
 
 	void view_conv(){
-		printf("conv = {\n");
-		for(int y=0;y<IN_Y;y++){
-			printf("  {");
-			for(int x=0;x<IN_X;x++){
-				printf(" %3d",conv(x,y));
-			}
-			printf(" }\n");
-		}
-		printf("};\n\n");
+		conv.view_float("Conv");
 	}
 
 	void view_out(){
-		printf("out = {\n");
-		for(int y=0;y<IN_Y/2;y++){
-			printf("  {");
-			for(int x=0;x<IN_X/2;x++){
-				printf(" %3d",out(x,y));
-			}
-			printf(" }\n");
-		}
-		printf("};\n\n");
+		out.view_float("Out");
 	}
 
 protected:
@@ -227,7 +203,7 @@ protected:
 	virtual T actfunc(const T& in){ // Activation function(Šˆ«‰»ŠÖ”)
 		// rectifier(³‹K‰»üŒ`ŠÖ”)
 		if(in<0){
-			return (T)0;
+			return 0;
 		} else {
 			return in;
 		}
@@ -279,6 +255,10 @@ Matrix<1,SIZE4,T> convolution_nn(
 		L1_perceptron[i].set_filter(L1_filter[i]);
 		L1_perceptron[i].Proc();
 	}
+	printf("L_perceptron[0]:\n");
+	L1_perceptron[0].view_filter();
+	L1_perceptron[0].view_conv();
+	L1_perceptron[0].view_out();
 
 	// Layer 2
 	for(int j=0;j<SIZE2;j++){
