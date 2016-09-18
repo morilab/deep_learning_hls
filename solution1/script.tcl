@@ -24,5 +24,5 @@ create_clock -period 10ns -name default
 #source "./deep_learning_hls/solution1/directives.tcl"
 csim_design -argv {D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\} -clean
 csynth_design
-cosim_design -argv {D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\}
+cosim_design -O -reduce_diskspace -trace_level port -argv {D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\}
 export_design -format ip_catalog

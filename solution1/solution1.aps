@@ -1,9 +1,15 @@
 <solution AutoPilot="com.autoesl.autopilot.solution">
+    <downStreamTool>
+        <DownStreamTool name="vivado"/>
+    </downStreamTool>
+    <clockList>
+        <clock default="false" name="default" period="10ns"/>
+    </clockList>
     <config>
-        <schedule model="deep_learning"/>
+        <schedule model="func_01"/>
     </config>
     <UIConfigurations>
-        <UIAutosynConf boardInfo="ZedBoard Zynq Evaluation and Development Kit (xc7z020clg484-1) " hideTrivialOp="true" isBasedOnBoard="true" isSolutionDirty="true" isStopAskAgain="true" showDetailDesignViewer="false">
+        <UIAutosynConf boardInfo="ZedBoard Zynq Evaluation and Development Kit (xc7z020clg484-1) " hideTrivialOp="true" isBasedOnBoard="true" isSolutionDirty="false" isStopAskAgain="true" showDetailDesignViewer="false">
             <Platform>xilinx/zynq/zynq</Platform>
             <Platform>xilinx/zynq/zynq_fpv6</Platform>
             <customLibs/>
@@ -41,8 +47,8 @@
         <Format formatName="syn_dcp"/>
         <Format formatName="pcore" use_netlist="none"/>
     </ExportDesign>
-    <Simulation>
-        <SimFlow askAgain="true" dumpTrace="none" name="cosim" optimizeCompile="false" reduce_diskspace="false" setup="false" toolName="Auto">
+    <Simulation argv="D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\">
+        <SimFlow askAgain="true" dumpTrace="port" name="cosim" optimizeCompile="true" reduce_diskspace="true" setup="false" toolName="auto" ldflags="" mflags="" compiledLibrary="">
             <Rtl active="false" name="systemc"/>
             <Rtl active="true" name="verilog"/>
             <Rtl active="false" name="vhdl"/>
@@ -61,11 +67,5 @@
         <library name="DefaultPlatform" value="xilinx/zynq/zynq"/>
         <library name="DefaultPlatform" value="xilinx/zynq/zynq_fpv6"/>
     </libraryList>
-    <downStreamTool>
-        <DownStreamTool name="vivado"/>
-    </downStreamTool>
-    <clockList>
-        <clock default="false" name="default" period="10ns"/>
-    </clockList>
 </solution>
 
