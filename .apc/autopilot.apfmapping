@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
   <source>
-    <originFiles name="Matrix.h" path="D:\Projects\FPGA\deep_learning_hls\Matrix.h"/>
     <originFiles name="deep_learning.h" path="D:\Projects\FPGA\deep_learning_hls\deep_learning.h"/>
+    <originFiles name="Matrix.h" path="D:\Projects\FPGA\deep_learning_hls\Matrix.h"/>
+    <originFiles name="deep_learning.cpp" path="D:\Projects\FPGA\deep_learning_hls\deep_learning.cpp"/>
+    <originFiles name="perceptron_fnn.h" path="D:\Projects\FPGA\deep_learning_hls\perceptron_fnn.h"/>
+    <originFiles name="relu_perceptron_fnn.h" path="D:\Projects\FPGA\deep_learning_hls\relu_perceptron_fnn.h"/>
+    <originFiles name="softmax_perceptron_fnn.h" path="D:\Projects\FPGA\deep_learning_hls\softmax_perceptron_fnn.h"/>
+    <originFiles name="convolution_perceptron.h" path="D:\Projects\FPGA\deep_learning_hls\convolution_perceptron.h"/>
   </source>
   <testbench>
-    <originFiles name="test.cpp" path="D:\Projects\FPGA\deep_learning_hls\test.cpp"/>
     <originFiles name="test.h" path="D:\Projects\FPGA\deep_learning_hls\test.h"/>
+    <originFiles name="test.cpp" path="D:\Projects\FPGA\deep_learning_hls\test.cpp"/>
     <originFiles name="MNIST.h" path="D:\Projects\FPGA\deep_learning_hls\MNIST.h"/>
     <originFiles name="MNIST.cpp" path="D:\Projects\FPGA\deep_learning_hls\MNIST.cpp"/>
+    <originFiles name="deep_learning.cpp" path="D:\Projects\FPGA\deep_learning_hls\deep_learning.cpp"/>
+    <originFiles name="deep_learning.h" path="D:\Projects\FPGA\deep_learning_hls\deep_learning.h"/>
   </testbench>
 </autopilotfilemapping:AutoPilotFileMapping>

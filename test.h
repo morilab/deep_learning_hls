@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ap_int.h>
-//#include <hls_math.h>
 #include "MNIST.h"
 #include "deep_learning.h"
 #define RAND_FLOAT(LOW,HIGH) LOW + (static_cast<float>(rand()))/(static_cast<float>(RAND_MAX/(HIGH-LOW)))

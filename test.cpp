@@ -20,8 +20,8 @@ int main(int argc, char** argv){
 
 	//test_01(); // deep_learning関数による4入力3出力ニューラルネット試験
 	//test_02(); // 畳み込みパーセプトロン単体試験
-	test_03(); // ディープラーニング試験(1)
-	//test_04(); // MNISTファイル読み込み試験
+	//test_03(); // ディープラーニング試験(1)
+	test_04(); // MNISTファイル読み込み試験
 	//test_05(); // ディープラーニング試験(2)
 
 	return 0;
@@ -76,11 +76,11 @@ int test_01(void){
 	//------------------------------------
 	// run DeepLearning
 	//------------------------------------
-	Matrix<1,3,int> z;
-	z = deep_learning<4,3,int>(x, weight, bias);
+	Matrix<1,3,int> result;
+	result = deep_learning<4,3,int>(x, weight, bias);
 
 	for(int i=0;i<3;i++){
-		printf("u%d = %d\n",i,z(0,i));
+		printf("u%d = %d\n",i,result(0,i));
 	}
 
 	return 0;
@@ -195,6 +195,7 @@ int test_03(void){
 // MNISTファイル読み込み試験
 //-------------------------------------------------------------------------------------
 int test_04(void){
+	u8_t inframe[28*28];
 	vector< vector<unsigned char> > image;
 	vector<unsigned char> label;
 	image = mnist.images();
@@ -210,12 +211,24 @@ int test_04(void){
 				} else {
 					printf(" %02x",pix);
 				}
+				inframe[y*28+x] = pix;
 			}
 			printf("\n");
 		}
 		printf("\n");
 	}
 
+	raw_internal_t L1_filter[SIZE1][WINDOW_SIZE];        // 20x(5x5)=500
+	raw_internal_t L1_bias  [SIZE1];                     // =20
+	raw_internal_t L2_filter[SIZE2][SIZE1][WINDOW_SIZE]; // 20x20x(5x5)=10,000
+	raw_internal_t L2_bias  [SIZE2][SIZE1];              // 20x20=400
+	raw_internal_t L3_weight[SIZE3][SIZE2][7*7];         // 500x20x(7x7)=490,000
+	raw_internal_t L3_bias  [SIZE3];                     // =500
+	raw_internal_t L4_weight[SIZE4][SIZE3];              // 10x500=1,000
+	raw_internal_t L4_bias  [SIZE4];                     // =10
+	func_01_result_t result;
+
+	result = func_01(inframe,L1_filter,L1_bias,L2_filter,L2_bias,L3_weight,L3_bias,L4_weight,L4_bias);
 	return 0;
 }
 
@@ -239,7 +252,6 @@ int test_05(void){
 	T L4_weight[SIZE4][SIZE3];
 	T L4_bias  [SIZE4];
 	Matrix<28,28,T> inframe;
-	Matrix<1,SIZE4,T> result;
 
 	// inframeロード
 	for(int y=0;y<28;y++){
@@ -281,9 +293,12 @@ int test_05(void){
 		L4_bias[i] = 0;
 	}
 
+	Matrix<1,SIZE4,T> result;
+	/*
 	result = convolution_nn<28,28 ,5,5 ,SIZE1,SIZE2,SIZE3,SIZE4 ,T>
 	         (inframe, L1_filter, L1_bias, L2_filter, L2_bias ,L3_weight ,L3_bias ,L4_weight ,L4_bias);
-
+	*/
+	result.view_float("Result");
 	return 0;
 }
 

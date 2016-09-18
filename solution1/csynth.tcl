@@ -22,7 +22,4 @@ open_solution "solution1"
 set_part {xc7z020clg484-1} -tool vivado
 create_clock -period 10ns -name default
 #source "./deep_learning_hls/solution1/directives.tcl"
-csim_design -argv {D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\} -clean
 csynth_design
-cosim_design -argv {D:\\\\Projects\\\\FPGA\\\\deep_learning_hls\\\\MNIST\\\\}
-export_design -format ip_catalog

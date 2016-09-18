@@ -1,10 +1,4 @@
 <solution AutoPilot="com.autoesl.autopilot.solution">
-    <downStreamTool>
-        <DownStreamTool name="vivado"/>
-    </downStreamTool>
-    <clockList>
-        <clock default="false" name="default" period="10ns"/>
-    </clockList>
     <config>
         <schedule model="deep_learning"/>
     </config>
@@ -67,5 +61,11 @@
         <library name="DefaultPlatform" value="xilinx/zynq/zynq"/>
         <library name="DefaultPlatform" value="xilinx/zynq/zynq_fpv6"/>
     </libraryList>
+    <downStreamTool>
+        <DownStreamTool name="vivado"/>
+    </downStreamTool>
+    <clockList>
+        <clock default="false" name="default" period="10ns"/>
+    </clockList>
 </solution>
 

@@ -47,9 +47,34 @@
 			<location>D:/Projects/FPGA/deep_learning_hls/Matrix.h</location>
 		</link>
 		<link>
+			<name>source/convolution_perceptron.h</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/convolution_perceptron.h</location>
+		</link>
+		<link>
+			<name>source/deep_learning.cpp</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/deep_learning.cpp</location>
+		</link>
+		<link>
 			<name>source/deep_learning.h</name>
 			<type>1</type>
 			<location>D:/Projects/FPGA/deep_learning_hls/deep_learning.h</location>
+		</link>
+		<link>
+			<name>source/perceptron_fnn.h</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/perceptron_fnn.h</location>
+		</link>
+		<link>
+			<name>source/relu_perceptron_fnn.h</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/relu_perceptron_fnn.h</location>
+		</link>
+		<link>
+			<name>source/softmax_perceptron_fnn.h</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/softmax_perceptron_fnn.h</location>
 		</link>
 		<link>
 			<name>testbench/MNIST.cpp</name>
@@ -60,6 +85,16 @@
 			<name>testbench/MNIST.h</name>
 			<type>1</type>
 			<location>D:/Projects/FPGA/deep_learning_hls/MNIST.h</location>
+		</link>
+		<link>
+			<name>testbench/deep_learning.cpp</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/deep_learning.cpp</location>
+		</link>
+		<link>
+			<name>testbench/deep_learning.h</name>
+			<type>1</type>
+			<location>D:/Projects/FPGA/deep_learning_hls/deep_learning.h</location>
 		</link>
 		<link>
 			<name>testbench/test.cpp</name>
