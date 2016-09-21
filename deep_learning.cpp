@@ -118,3 +118,32 @@ func_01_result_t func_01(
 
 	return func_01;
 }
+
+void Layer4(
+	raw_internal_t in     [SIZE3],
+	raw_internal_t weight [SIZE4][SIZE3],
+	raw_internal_t bias   [SIZE4],
+	raw_internal_t out    [SIZE4])
+{
+	softmax_perceptron_fnn<SIZE3,SIZE4,raw_internal_t> fnn;
+
+	Layer4_in_L1 :
+	for(int i=0;i<SIZE3;i++){
+		fnn.in(0,i) = in[i];
+	}
+
+	Layer4_Param_L1 :
+	for(int j=0;j<SIZE4;j++){
+		fnn.bias(0,j)=bias[j];
+		Layer4_Param_L2 :
+		for(int i=0;i<SIZE3;i++){
+			fnn.weight(i,j) = weight[j][i];
+		}
+	}
+	fnn.run();
+
+	Layer4_out_L1 :
+	for(int i=0;i<SIZE4;i++){
+		out[i] = fnn.out(0,i);
+	}
+}
