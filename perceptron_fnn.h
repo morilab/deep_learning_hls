@@ -19,6 +19,7 @@ template <const int X, const int Y, typename T>
 int perceptron_fnn<X,Y,T>::errfunc(Matrix<1,Y,T>& d){ // error function(Œë·ŠÖ”)
 	int err;
 	err = 0;
+	PerceptronFnn_ErrFunc_L1 :
 	for(int j=0;j<Y;j++){
 		T dt = d(0,j)-out(0,j);
 		err += dt*dt;

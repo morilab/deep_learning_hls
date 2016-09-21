@@ -28,9 +28,11 @@ template <const int X, const int Y, typename T>
 void softmax_perceptron_fnn<X,Y,T>::run() {
 	u = weight*base::in+bias;
 	sum_exp_u = 0.0;
+	ReluPerceptronFnn_Run1_L1 :
 	for(int y=0;y<Y;y++){
 		sum_exp_u += exp((float)(u(0,y)));
 	}
+	ReluPerceptronFnn_Run2_L1 :
 	for(int y=0;y<Y;y++){
 		base::out(0,y) = actfunc(u(0,y));
 	}

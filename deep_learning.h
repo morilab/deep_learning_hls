@@ -39,9 +39,9 @@ struct func_01_result_t {
 	raw_internal_t is_8;
 	raw_internal_t is_9;
 };
-const int SIZE1 = 20;
-const int SIZE2 = 20;
-const int SIZE3 = 500;
+const int SIZE1 = 4;//20;
+const int SIZE2 = 4;//20;
+const int SIZE3 = 32;//500;
 const int SIZE4 = 10;
 const int WINDOW_SIZE = 5*5;
 
@@ -57,6 +57,33 @@ func_01_result_t func_01(
 		raw_internal_t L4_bias  [SIZE4]                      // =10
 );
 
+void Layer1(
+	u8_t  in[28*28],
+	raw_internal_t L1_filter[SIZE1][WINDOW_SIZE],
+	raw_internal_t L1_bias  [SIZE1],
+	raw_internal_t L1_out   [SIZE1][14*14]
+);
+
+void Layer2(
+	raw_internal_t in     [SIZE1][14*14],
+	raw_internal_t filter [SIZE2][SIZE1][WINDOW_SIZE],
+	raw_internal_t bias   [SIZE2][SIZE1],
+	raw_internal_t out    [SIZE2][7*7]
+);
+
+void Layer3(
+	raw_internal_t in     [SIZE2][7*7],
+	raw_internal_t filter [SIZE3][SIZE2][7*7],
+	raw_internal_t bias   [SIZE3],
+	raw_internal_t out    [SIZE3]
+);
+
+void Layer4(
+	raw_internal_t in     [SIZE3],
+	raw_internal_t filter [SIZE4][SIZE3],
+	raw_internal_t biasa  [SIZE4],
+	raw_internal_t out    [SIZE4]
+);
 //-------------------------------------------------------------------
 // wrapper for VivadoHLS
 //-------------------------------------------------------------------
@@ -64,8 +91,10 @@ template <const int X, const int Y, typename T>
 Matrix<1,Y,T> deep_learning(T x[X], T weight[Y][X], T bias[Y]) {
 	relu_perceptron_fnn<X,Y,T> fnn;
 
+	DeepLearning_Init_L1 :
 	for(int i=0;i<Y;i++){
 		fnn.bias(0,i)=bias[i];
+		DeepLearning_Init_L2 :
 		for(int j=0;j<X;j++){
 			fnn.in(0,j)=x[j];
 			fnn.weight(j,i)=weight[i][j];

@@ -1,0 +1,36 @@
+<AutoPilot:ProjectResources xmlns:AutoPilot="com.autoesl.autopilot.ui.directiveView">
+    <sourceFile name="">
+        <directive functionName="func_01" label="" functionLabel="">
+            <pragma name="ARRAY_RESHAPE">
+                <option name="variable" value="L1_filter" positionalBoolean="4"/>
+                <option name="cyclic" value="" positionalBoolean="type"/>
+                <option name="factor" value="25"/>
+                <option name="dim" value="2"/>
+            </pragma>
+        </directive>
+        <directive functionName="func_01" label="" functionLabel="">
+            <pragma name="ARRAY_RESHAPE">
+                <option name="variable" value="L2_filter" positionalBoolean="4"/>
+                <option name="cyclic" value="" positionalBoolean="type"/>
+                <option name="factor" value="25"/>
+                <option name="dim" value="3"/>
+            </pragma>
+        </directive>
+        <directive functionName="func_01" label="" functionLabel="">
+            <pragma name="DATAFLOW"/>
+        </directive>
+        <directive functionName="func_01" label="" functionLabel="">
+            <pragma name="ARRAY_PARTITION">
+                <option name="variable" value="inframe" positionalBoolean="4"/>
+                <option name="complete" value="" positionalBoolean="type"/>
+                <option name="dim" value="1"/>
+            </pragma>
+        </directive>
+        <directive functionName="convolution_nn" label="" functionLabel="">
+            <pragma name="PIPELINE">
+                <option name="II" value="1"/>
+            </pragma>
+        </directive>
+    </sourceFile>
+</AutoPilot:ProjectResources>
+
