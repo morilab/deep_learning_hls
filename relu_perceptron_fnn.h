@@ -20,6 +20,7 @@ private:
 template <const int X, const int Y, typename T>
 void relu_perceptron_fnn<X,Y,T>::run() {
 	u = weight*base::in+bias;
+	ReluPerceptronFnn_Run_L1 :
 	for(int y=0;y<Y;y++){
 		base::out(0,y) = actfunc(u(0,y));
 	}

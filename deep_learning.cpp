@@ -18,6 +18,7 @@ Matrix<1,SIZE4,T> convolution_nn(
 	softmax_perceptron_fnn<SIZE3,SIZE4,T> L4_out;
 
 	// Layer 1 (Input Layer)
+	ConvolutionNN_Layer1_L1 :
 	for(int i=0;i<SIZE1;i++){
 		L1_perceptron[i].in = inframe;
 		L1_perceptron[i].set_bias(L1_bias[i]);
@@ -30,8 +31,10 @@ Matrix<1,SIZE4,T> convolution_nn(
 	L1_perceptron[0].view_out();
 
 	// Layer 2
+	ConvolutionNN_Layer2_L1 :
 	for(int j=0;j<SIZE2;j++){
 		L2_perceptron[j].clear_conv();
+		ConvolutionNN_Layer2A_L2 :
 		for(int i=0;i<SIZE1;i++){
 			L2_perceptron[j].in = L1_perceptron[i].out;
 			L2_perceptron[j].set_bias(L2_bias[j][i]);
@@ -41,7 +44,9 @@ Matrix<1,SIZE4,T> convolution_nn(
 		L2_perceptron[j].Activation();
 		L2_perceptron[j].MaxPooling();
 
+		ConvolutionNN_Layer2B_L2 :
 		for(int y=0;y<IN_Y/4;y++){
+			ConvolutionNN_Layer2B_L3 :
 			for(int x=0;x<IN_X/4;x++){
 				const int index  = (IN_X/4)*y+x;
 				const int offset = (IN_X/4*IN_Y/4)*j;
@@ -51,9 +56,12 @@ Matrix<1,SIZE4,T> convolution_nn(
 	}
 
 	// Layer 3
+	ConvolutionNN_Layer3A_L1 :
 	for(int k=0;k<SIZE3;k++){
 		L3_connect.bias(0,k)=L3_bias[k];
+		ConvolutionNN_Layer3A_L2 :
 		for(int j=0;j<SIZE2;j++){
+			ConvolutionNN_Layer3A_L3 :
 			for(int i=0;i<IN_X/4*IN_Y/4;i++){
 				L3_connect.weight(j*(IN_X/4*IN_Y/4)+i,k) = L3_weight[k][j][i];
 			}
@@ -61,13 +69,16 @@ Matrix<1,SIZE4,T> convolution_nn(
 	}
 	L3_connect.run();
 	//L3_connect.out.view_float("L3.out");
+	ConvolutionNN_Layer3B_L1 :
 	for(int i=0;i<SIZE3;i++){
 		L4_out.in(0,i) = L3_connect.out(0,i);
 	}
 
 	// Layer 4 (Output Layer)
+	ConvolutionNN_Layer4_L1 :
 	for(int j=0;j<SIZE4;j++){
 		L4_out.bias(0,j)=L4_bias[j];
+		ConvolutionNN_Layer4_L2 :
 		for(int i=0;i<SIZE3;i++){
 			L4_out.weight(i,j) = L4_weight[j][i];
 		}
@@ -95,7 +106,9 @@ func_01_result_t func_01(
 	Matrix<28,28,raw_internal_t> inframe;
 	Matrix<1,SIZE4,raw_internal_t> result;
 
+	Func01_Inframe_L1 :
 	for(int y=0;y<28;y++){
+		Func01_Inframe_L2 :
 		for(int x=0;x<28;x++){
 			inframe(x,y) = in[y*28+x];
 		}
@@ -117,4 +130,42 @@ func_01_result_t func_01(
 	func_01.is_9 = result(0,9);
 
 	return func_01;
+}
+
+
+void Layer1(
+	u8_t  in[28*28],
+	raw_internal_t L1_filter[SIZE1][WINDOW_SIZE],        // 20x(5x5)=500
+	raw_internal_t L1_bias  [SIZE1],                     // =20
+	raw_internal_t L1_out   [SIZE1][14*14])
+{
+	convolution_perceptron<28,28,5,5,raw_internal_t> L1_perceptron[SIZE1];
+	raw_internal_t outframe[SIZE1][14*14];
+
+	// Set InputFrame
+	Layer1_Inframe_L1 :
+	for(int y=0;y<28;y++){
+		Layer1_Inframe_L2 :
+		for(int x=0;x<28;x++){
+			Layer1_Inframe_L3 :
+			for(int i=0;i<SIZE1;i++){
+				L1_perceptron[i].in(x,y) = in[y*28+x];
+			}
+		}
+	}
+
+	// Set Parameter & Process
+	Layer1_Run_L1 :
+	for(int i=0;i<SIZE1;i++){
+		L1_perceptron[i].set_bias(L1_bias[i]);
+		L1_perceptron[i].set_filter(L1_filter[i]);
+		L1_perceptron[i].Proc();
+		Layer1_Run_L2 :
+		for(int y=0;y<14;y++){
+			Layer1_Run_L3 :
+			for(int x=0;x<14;x++){
+				L1_out[i][y*14+x] = L1_perceptron[i].out(x,y);
+			}
+		}
+	}
 }

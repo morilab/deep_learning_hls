@@ -9,8 +9,8 @@ public:
 
 	// コンストラクタ
 	Matrix() {
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Init_L1 : for(int i=0;i<X;i++){
+			Matrix_Init_L2 : for(int j=0;j<Y;j++){
 				v[i][j] = (T)0;
 			}
 		}
@@ -19,8 +19,8 @@ public:
 
 	// 演算子のオーバーライド
 	Matrix<X,Y,T>& operator = (const Matrix<X,Y,T>& in){
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Copy_L1 : for(int i=0;i<X;i++){
+			Matrix_Copy_L2 : for(int j=0;j<Y;j++){
 				this->v[i][j] = in.v[i][j];
 			}
 		}
@@ -31,40 +31,40 @@ public:
 	}
 	Matrix<X,Y,T>  operator-(){
 		Matrix<X,Y,T> tmp;
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Sign_L1 : for(int i=0;i<X;i++){
+			Matrix_Sign_L2 : for(int j=0;j<Y;j++){
 				tmp.v[i][j] =- v[i][j];
 			}
 		}
 		return tmp;
 	}
 	Matrix<X,Y,T>& operator +=(const Matrix<X,Y,T>& in){
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Plus_L1 : for(int i=0;i<X;i++){
+			Matrix_Plus_L2 : for(int j=0;j<Y;j++){
 				v[i][j] += in.v[i][j];
 			}
 		}
 		return *this;
 	}
 	Matrix<X,Y,T>& operator -=(const Matrix<X,Y,T>& in){
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Minus_L1 : for(int i=0;i<X;i++){
+			Matrix_Minus_L2 : for(int j=0;j<Y;j++){
 				v[i][j] -= in.v[i][j];
 			}
 		}
 		return *this;
 	}
 	Matrix<X,Y,T>& operator *=(const T coef){
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Multi_L1 : for(int i=0;i<X;i++){
+			Matrix_Multi_L2 : for(int j=0;j<Y;j++){
 				v[i][j] *= coef;
 			}
 		}
 		return *this;
 	}
 	Matrix<X,Y,T>& operator /=(const T coef){
-		for(int i=0;i<X;i++){
-			for(int j=0;j<Y;j++){
+		Matrix_Div_L1 : for(int i=0;i<X;i++){
+			Matrix_Div_L2 : for(int j=0;j<Y;j++){
 				v[i][j] /= coef;
 			}
 		}
